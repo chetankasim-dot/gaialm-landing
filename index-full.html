@@ -1,0 +1,808 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GaiaLM — Sustainable Intelligence for All</title>
+  <meta name="description" content="The world's first domain-specific AI for ESG, carbon markets, and climate finance. Trained on 200+ global standards. Built for sustainability professionals." />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:      #030D07;
+      --s1:      #071810;
+      --s2:      #0C2318;
+      --mint:    #6FCF97;
+      --gold:    #F2C94C;
+      --text:    #E8F5EE;
+      --muted:   #6B8F77;
+      --dim:     #3D6B50;
+      --border:  rgba(111,207,151,0.15);
+      --glow:    rgba(111,207,151,0.08);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    /* NAV */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 48px; height: 64px;
+      background: rgba(3,13,7,0.92);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .nav-logo {
+      display: flex; align-items: center; gap: 10px;
+      font-family: 'Syne', sans-serif; font-size: 1.3rem; font-weight: 800;
+      color: var(--text); text-decoration: none;
+    }
+
+    .nav-logo-icon {
+      width: 32px; height: 32px; border-radius: 8px;
+      background: linear-gradient(135deg, #1A5C45, #6FCF97);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 16px;
+    }
+
+    .nav-links { display: flex; align-items: center; gap: 32px; }
+
+    .nav-links a {
+      color: var(--muted); text-decoration: none; font-size: .9rem;
+      transition: color .2s;
+    }
+
+    .nav-links a:hover { color: var(--mint); }
+
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center;
+      padding: 10px 24px; border-radius: 10px;
+      font-family: 'DM Sans', sans-serif; font-size: .9rem; font-weight: 600;
+      cursor: pointer; transition: all .2s; text-decoration: none; border: none;
+    }
+
+    .btn-primary {
+      background: var(--mint); color: #030D07;
+    }
+
+    .btn-primary:hover { background: #89e0ae; transform: translateY(-1px); }
+
+    .btn-outline {
+      background: transparent; color: var(--mint);
+      border: 1px solid var(--mint);
+    }
+
+    .btn-outline:hover { background: rgba(111,207,151,0.08); }
+
+    .btn-ghost {
+      background: transparent; color: var(--text);
+      border: 1px solid var(--border);
+    }
+
+    .btn-ghost:hover { border-color: var(--mint); color: var(--mint); }
+
+    /* HERO */
+    .hero {
+      min-height: 100vh;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      text-align: center; padding: 120px 24px 80px;
+      position: relative; overflow: hidden;
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute; top: -200px; left: 50%; transform: translateX(-50%);
+      width: 800px; height: 800px; border-radius: 50%;
+      background: radial-gradient(circle, rgba(111,207,151,0.06) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 6px 16px; border-radius: 99px;
+      background: rgba(111,207,151,0.08); border: 1px solid var(--border);
+      font-size: .8rem; color: var(--mint); margin-bottom: 32px;
+    }
+
+    .hero-badge span { width: 6px; height: 6px; border-radius: 50%; background: var(--mint); animation: pulse 2s infinite; }
+
+    @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.5;transform:scale(1.2)} }
+
+    .hero h1 {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(2.5rem, 6vw, 5rem);
+      font-weight: 800;
+      line-height: 1.1;
+      margin-bottom: 24px;
+      max-width: 900px;
+    }
+
+    .hero h1 .accent { color: var(--mint); }
+
+    .hero p {
+      font-size: clamp(1rem, 2vw, 1.2rem);
+      color: var(--muted); max-width: 640px;
+      margin-bottom: 48px; line-height: 1.7;
+    }
+
+    .hero-ctas {
+      display: flex; gap: 16px; flex-wrap: wrap; justify-content: center;
+      margin-bottom: 80px;
+    }
+
+    .hero-ctas .btn { padding: 14px 32px; font-size: 1rem; }
+
+    /* STATS BAR */
+    .stats-bar {
+      display: flex; justify-content: center; gap: 64px; flex-wrap: wrap;
+      padding: 40px 48px;
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      background: var(--s1);
+    }
+
+    .stat-item { text-align: center; }
+
+    .stat-item .num {
+      font-family: 'Syne', sans-serif; font-size: 2.2rem; font-weight: 800;
+      color: var(--mint); display: block;
+    }
+
+    .stat-item .lbl { font-size: .82rem; color: var(--muted); margin-top: 4px; }
+
+    /* SECTION */
+    section { padding: 100px 48px; }
+
+    .section-label {
+      font-size: .75rem; font-weight: 700; letter-spacing: .1em;
+      color: var(--mint); text-transform: uppercase; margin-bottom: 16px;
+    }
+
+    .section-title {
+      font-family: 'Syne', sans-serif; font-size: clamp(1.8rem, 3vw, 2.8rem);
+      font-weight: 800; margin-bottom: 16px; max-width: 700px;
+    }
+
+    .section-sub {
+      color: var(--muted); font-size: 1.05rem; max-width: 560px;
+      line-height: 1.7; margin-bottom: 56px;
+    }
+
+    /* PROBLEM */
+    .problem { background: var(--s1); text-align: center; }
+    .problem .section-title, .problem .section-sub { margin-left: auto; margin-right: auto; }
+
+    .problem-cards {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 24px; max-width: 1100px; margin: 0 auto;
+    }
+
+    .problem-card {
+      background: var(--bg); border: 1px solid var(--border);
+      border-radius: 16px; padding: 28px;
+      text-align: left;
+    }
+
+    .problem-card .icon { font-size: 2rem; margin-bottom: 16px; }
+    .problem-card h3 { font-family: 'Syne', sans-serif; font-size: 1rem; font-weight: 700; margin-bottom: 8px; }
+    .problem-card p { font-size: .85rem; color: var(--muted); line-height: 1.6; }
+
+    /* MODULES */
+    .modules-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 20px; max-width: 1200px; margin: 0 auto;
+    }
+
+    .module-card {
+      background: var(--s1); border: 1px solid var(--border);
+      border-radius: 16px; padding: 28px;
+      transition: border-color .2s, transform .2s;
+    }
+
+    .module-card:hover { border-color: var(--mint); transform: translateY(-2px); }
+
+    .module-card .mod-header {
+      display: flex; align-items: center; gap: 12px; margin-bottom: 12px;
+    }
+
+    .module-card .mod-icon {
+      width: 40px; height: 40px; border-radius: 10px;
+      background: rgba(111,207,151,0.1); display: flex;
+      align-items: center; justify-content: center; font-size: 20px; flex-shrink: 0;
+    }
+
+    .module-card .mod-label {
+      font-size: .72rem; color: var(--mint); font-weight: 700;
+      letter-spacing: .08em; text-transform: uppercase;
+    }
+
+    .module-card h3 {
+      font-family: 'Syne', sans-serif; font-size: 1rem; font-weight: 700; margin-bottom: 8px;
+    }
+
+    .module-card p { font-size: .83rem; color: var(--muted); line-height: 1.6; }
+
+    /* HOW IT WORKS */
+    .how { background: var(--s1); }
+
+    .steps {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 40px; max-width: 1100px; margin: 0 auto; position: relative;
+    }
+
+    .step { text-align: center; }
+
+    .step-num {
+      width: 48px; height: 48px; border-radius: 50%;
+      background: var(--mint); color: #030D07;
+      font-family: 'Syne', sans-serif; font-weight: 800; font-size: 1.1rem;
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 20px;
+    }
+
+    .step h3 { font-family: 'Syne', sans-serif; font-weight: 700; margin-bottom: 10px; }
+    .step p { font-size: .85rem; color: var(--muted); line-height: 1.6; max-width: 240px; margin: 0 auto; }
+
+    /* USE CASES */
+    .use-cases-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 20px; max-width: 1200px; margin: 0 auto;
+    }
+
+    .use-case {
+      background: var(--s1); border: 1px solid var(--border);
+      border-radius: 16px; padding: 28px;
+    }
+
+    .use-case .uc-icon { font-size: 2.2rem; margin-bottom: 16px; }
+    .use-case h3 { font-family: 'Syne', sans-serif; font-size: 1rem; font-weight: 700; margin-bottom: 10px; color: var(--mint); }
+    .use-case p { font-size: .83rem; color: var(--muted); line-height: 1.6; }
+
+    /* FEATURES */
+    .features { background: var(--s1); }
+
+    .features-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 24px; max-width: 1100px; margin: 0 auto;
+    }
+
+    .feature {
+      display: flex; gap: 16px; align-items: flex-start;
+    }
+
+    .feature-icon {
+      width: 40px; height: 40px; border-radius: 10px; flex-shrink: 0;
+      background: rgba(111,207,151,0.1); border: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: center; font-size: 18px;
+    }
+
+    .feature h3 { font-family: 'Syne', sans-serif; font-weight: 700; font-size: .95rem; margin-bottom: 6px; }
+    .feature p { font-size: .82rem; color: var(--muted); line-height: 1.6; }
+
+    /* CTA SECTION */
+    .cta-section {
+      text-align: center; padding: 100px 48px;
+      background: linear-gradient(180deg, var(--bg) 0%, var(--s1) 100%);
+    }
+
+    .cta-section .section-title { margin: 0 auto 16px; }
+    .cta-section .section-sub { margin: 0 auto 48px; }
+
+    .cta-cards {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 24px; max-width: 900px; margin: 0 auto;
+    }
+
+    .cta-card {
+      background: var(--s2); border: 1px solid var(--border);
+      border-radius: 20px; padding: 36px 28px;
+    }
+
+    .cta-card h3 { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 1.2rem; margin-bottom: 12px; }
+    .cta-card p { font-size: .85rem; color: var(--muted); margin-bottom: 24px; line-height: 1.6; }
+    .cta-card .btn { width: 100%; }
+
+    /* ACCESS FORM */
+    .access-form { display: flex; flex-direction: column; gap: 12px; margin-bottom: 24px; }
+
+    .access-form input {
+      background: var(--s1); border: 1px solid var(--border);
+      border-radius: 10px; padding: 12px 16px;
+      color: var(--text); font-family: 'DM Sans', sans-serif; font-size: .9rem;
+      outline: none; transition: border-color .2s;
+    }
+
+    .access-form input:focus { border-color: var(--mint); }
+    .access-form input::placeholder { color: var(--dim); }
+
+    /* FOOTER */
+    footer {
+      padding: 48px; border-top: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: space-between;
+      flex-wrap: wrap; gap: 24px;
+    }
+
+    footer .footer-logo {
+      font-family: 'Syne', sans-serif; font-weight: 800; font-size: 1.1rem;
+      color: var(--text); display: flex; align-items: center; gap: 8px;
+    }
+
+    footer p { font-size: .8rem; color: var(--muted); }
+
+    footer .footer-links { display: flex; gap: 24px; }
+    footer .footer-links a { font-size: .82rem; color: var(--muted); text-decoration: none; transition: color .2s; }
+    footer .footer-links a:hover { color: var(--mint); }
+
+    /* FORM SUCCESS */
+    .form-success {
+      display: none; padding: 16px; border-radius: 10px;
+      background: rgba(111,207,151,0.1); border: 1px solid rgba(111,207,151,0.3);
+      color: var(--mint); font-size: .85rem; text-align: center;
+    }
+
+    /* RESPONSIVE */
+    @media (max-width: 768px) {
+      nav { padding: 0 24px; }
+      .nav-links { display: none; }
+      section { padding: 60px 24px; }
+      .stats-bar { gap: 32px; padding: 32px 24px; }
+      footer { padding: 32px 24px; flex-direction: column; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="/" class="nav-logo">
+    <div class="nav-logo-icon">🌿</div>
+    GaiaLM
+  </a>
+  <div class="nav-links">
+    <a href="#notify">Get Notified</a>
+  </div>
+  <a href="#notify" class="btn btn-primary">Join Waitlist →</a>
+</nav>
+
+<!-- HERO -->
+<section class="hero" style="min-height: 100vh; justify-content: center;">
+  <div class="hero-badge" style="background: rgba(242,201,76,0.12); border-color: rgba(242,201,76,0.3);">
+    <span style="background: var(--gold); animation: pulse 1.5s infinite;"></span> <span style="color: var(--gold);">Coming Soon</span>
+  </div>
+  <h1>
+    Sustainable Intelligence<br />
+    <span class="accent">for Everyone.</span>
+  </h1>
+  <p>
+    The world's first domain-specific AI for ESG, carbon markets, and climate finance —
+    trained on 200+ global standards. Expert-level answers in seconds, not days.
+  </p>
+
+  <!-- Teaser highlights -->
+  <div style="display: flex; gap: 32px; flex-wrap: wrap; justify-content: center; margin-bottom: 48px; margin-top: 16px;">
+    <div style="text-align: center;">
+      <span style="font-family: 'Syne', sans-serif; font-size: 1.8rem; font-weight: 800; color: var(--mint);">200+</span>
+      <p style="font-size: .75rem; color: var(--muted); margin: 0;">Global Standards</p>
+    </div>
+    <div style="text-align: center;">
+      <span style="font-family: 'Syne', sans-serif; font-size: 1.8rem; font-weight: 800; color: var(--mint);">15</span>
+      <p style="font-size: .75rem; color: var(--muted); margin: 0;">AI Modules</p>
+    </div>
+    <div style="text-align: center;">
+      <span style="font-family: 'Syne', sans-serif; font-size: 1.8rem; font-weight: 800; color: var(--mint);">&lt;2s</span>
+      <p style="font-size: .75rem; color: var(--muted); margin: 0;">Response Time</p>
+    </div>
+  </div>
+
+  <!-- Waitlist form inline -->
+  <div id="notify" style="background: var(--s1); border: 1px solid var(--border); border-radius: 16px; padding: 32px; max-width: 420px; width: 100%;">
+    <h3 style="font-family: 'Syne', sans-serif; font-size: 1.1rem; margin-bottom: 8px; text-align: center;">Be the first to know</h3>
+    <p style="font-size: .85rem; color: var(--muted); margin-bottom: 20px; text-align: center;">Join the waitlist for early access and launch updates.</p>
+    <form class="access-form" id="accessForm" action="https://formspree.io/f/meedaaov" method="POST" style="margin-bottom: 0;">
+      <input type="email" name="email" placeholder="Your email" required />
+      <button type="submit" class="btn btn-primary" style="width: 100%;">Notify Me →</button>
+    </form>
+    <div class="form-success" id="formSuccess">You're on the list! We'll be in touch soon.</div>
+  </div>
+
+  <p style="margin-top: 24px; font-size: .8rem; color: var(--dim);">
+    ESG · Carbon Markets · Climate Finance · TCFD · GRI · ISSB · Verra VCS
+  </p>
+</section>
+
+<!-- STATS BAR - COMMENTED OUT FOR COMING SOON
+<div class="stats-bar">
+  <div class="stat-item">
+    <span class="num">200+</span>
+    <div class="lbl">Global Standards Ingested</div>
+  </div>
+  <div class="stat-item">
+    <span class="num">15</span>
+    <div class="lbl">Intelligence Modules</div>
+  </div>
+  <div class="stat-item">
+    <span class="num">5,000+</span>
+    <div class="lbl">Knowledge Vectors</div>
+  </div>
+  <div class="stat-item">
+    <span class="num">&lt;2s</span>
+    <div class="lbl">Perceived Response Time</div>
+  </div>
+  <div class="stat-item">
+    <span class="num">95%+</span>
+    <div class="lbl">Avg Confidence Score</div>
+  </div>
+</div>
+-->
+
+<!--
+<section class="problem">
+  <div class="section-label">The Problem</div>
+  <h2 class="section-title">Your team spends days on research that should take seconds</h2>
+  <p class="section-sub">
+    Sustainability professionals waste 40–60% of their time searching through frameworks, standards, and guidelines —
+    time that should go into strategy, client advisory, and action.
+  </p>
+  <div class="problem-cards">
+    <div class="problem-card">
+      <div class="icon">📚</div>
+      <h3>Standards overload</h3>
+      <p>GRI, ISSB S2, ESRS, TCFD, PCAF, Verra VCS — 200+ frameworks, each hundreds of pages. Nobody can know all of them.</p>
+    </div>
+    <div class="problem-card">
+      <div class="icon">💸</div>
+      <h3>Expensive advisory</h3>
+      <p>Specialist ESG consultants charge $300–500/hour for answers that a well-trained AI can provide in 12 seconds.</p>
+    </div>
+    <div class="problem-card">
+      <div class="icon">🤖</div>
+      <h3>Generic AI hallucinations</h3>
+      <p>General-purpose AI tools fabricate citations, confuse framework versions, and cannot be trusted for regulated disclosure work.</p>
+    </div>
+    <div class="problem-card">
+      <div class="icon">⏱️</div>
+      <h3>Slow compliance cycles</h3>
+      <p>Engagements that should take days take weeks because research bottlenecks every stage of the process.</p>
+    </div>
+  </div>
+</section>
+-->
+
+<!-- MODULES - COMMENTED OUT FOR COMING SOON
+<section id="modules">
+  <div style="max-width:1200px; margin:0 auto;">
+    <div class="section-label">Intelligence Modules</div>
+    <h2 class="section-title">One platform. Every sustainability domain.</h2>
+    <p class="section-sub">
+      From ESG reporting and carbon markets to product stewardship and biodiversity —
+      GaiaLM covers the full spectrum of sustainability intelligence in a single platform.
+    </p>
+  </div>
+  <div class="modules-grid">
+    <div class="module-card">
+      <div class="mod-header">
+        <div class="mod-icon">📊</div>
+        <div>
+          <div class="mod-label">M1</div>
+          <h3>ESG Research Synthesis</h3>
+        </div>
+      </div>
+      <p>GRI, ISSB S2, ESRS, TCFD, PCAF — synthesise any ESG framework instantly with cited, clause-level responses.</p>
+    </div>
+    <div class="module-card">
+      <div class="mod-header">
+        <div class="mod-icon">🌡️</div>
+        <div>
+          <div class="mod-label">M2</div>
+          <h3>Climate Risk Analysis</h3>
+        </div>
+      </div>
+      <p>TCFD scenario analysis, physical and transition risk assessment, NGFS pathways, and ISSB S2 disclosure support.</p>
+    </div>
+    <div class="module-card">
+      <div class="mod-header">
+        <div class="mod-icon">🔍</div>
+        <div>
+          <div class="mod-label">M3</div>
+          <h3>ESG Due Diligence & ESIA</h3>
+        </div>
+      </div>
+      <p>IFC Performance Standards 1–8, Equator Principles, and Environmental & Social Impact Assessment guidance.</p>
+    </div>
+    <div class="module-card">
+      <div class="mod-header">
+        <div class="mod-icon">🌱</div>
+        <div>
+          <div class="mod-label">M4</div>
+          <h3>Carbon Project Intelligence</h3>
+        </div>
+      </div>
+      <p>Verra VCS, Gold Standard, ICVCM CCPs, ACR and CAR methodology guidance for carbon project developers.</p>
+    </div>
+    <div class="module-card">
+      <div class="mod-header">
+        <div class="mod-icon">📈</div>
+        <div>
+          <div class="mod-label">M5</div>
+          <h3>Carbon Market Intelligence</h3>
+        </div>
+      </div>
+      <p>VCM market integrity, Article 6 mechanisms, CORSIA, corresponding adjustments, and VCMI Claims Code.</p>
+    </div>
+    <div class="module-card">
+      <div class="mod-header">
+        <div class="mod-icon">🛡️</div>
+        <div>
+          <div class="mod-label">M6</div>
+          <h3>Greenwashing Detection</h3>
+        </div>
+      </div>
+      <p>EU Green Claims Directive, FTC Green Guides, SBTi net-zero standards, and VCMI claims substantiation.</p>
+    </div>
+    <div class="module-card">
+      <div class="mod-header">
+        <div class="mod-icon">💊</div>
+        <div>
+          <div class="mod-label">M10</div>
+          <h3>Product Stewardship</h3>
+        </div>
+      </div>
+      <p>ISO 14067 PCF, LCA methodology, REACH compliance, TSCA screening, EPD preparation, and EPR obligations.</p>
+    </div>
+    <div class="module-card">
+      <div class="mod-header">
+        <div class="mod-icon">🏗️</div>
+        <div>
+          <div class="mod-label">M11</div>
+          <h3>Real Estate & Built Environment</h3>
+        </div>
+      </div>
+      <p>LEED, BREEAM, WELL, CRREM stranded asset pathways, GRESB assessment support, and embodied carbon guidance.</p>
+    </div>
+    <div class="module-card" style="border-color: rgba(242,201,76,0.3);">
+      <div class="mod-header">
+        <div class="mod-icon" style="background:rgba(242,201,76,0.1);">⚡</div>
+        <div>
+          <div class="mod-label" style="color:var(--gold)">Coming Soon</div>
+          <h3>+ 7 More Modules</h3>
+        </div>
+      </div>
+      <p>Energy & Renewables, Sustainable Financing, Sector Intelligence, Environmental Intelligence, Agriculture, Data Centres & more.</p>
+    </div>
+  </div>
+</section>
+-->
+
+<!-- HOW IT WORKS - COMMENTED OUT FOR COMING SOON
+<section id="how" class="how">
+  <div style="text-align:center; max-width:700px; margin:0 auto 64px;">
+    <div class="section-label">How It Works</div>
+    <h2 class="section-title" style="margin:0 auto 16px;">Expert answers in three steps</h2>
+    <p class="section-sub" style="margin:0 auto;">No setup, no training, no hallucinations. Just ask.</p>
+  </div>
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">1</div>
+      <h3>Select your module</h3>
+      <p>Choose from 15 intelligence modules covering every sustainability domain your team works in.</p>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <h3>Ask your question</h3>
+      <p>Type any ESG, carbon, or climate question — or upload a document for GaiaLM to analyse against the standards.</p>
+    </div>
+    <div class="step">
+      <div class="step-num">3</div>
+      <h3>Get a cited answer</h3>
+      <p>Receive a structured, confidence-scored response with clause-level citations — in under 2 seconds.</p>
+    </div>
+  </div>
+</section>
+
+<!-- USE CASES -->
+<section id="use-cases">
+  <div style="max-width:1200px; margin:0 auto;">
+    <div class="section-label">Use Cases</div>
+    <h2 class="section-title">Built for every sustainability professional</h2>
+    <p class="section-sub">From boutique ESG advisory firms to Fortune 500 sustainability teams — GaiaLM scales to every use case.</p>
+  </div>
+  <div class="use-cases-grid">
+    <div class="use-case">
+      <div class="uc-icon">🏦</div>
+      <h3>Financial Institutions</h3>
+      <p>TCFD disclosure, PCAF financed emissions, green bond structuring, climate risk scenario analysis, and ISSB S2 alignment — all in one platform.</p>
+    </div>
+    <div class="use-case">
+      <div class="uc-icon">🌍</div>
+      <h3>ESG Consulting Firms</h3>
+      <p>Reduce research time by 60%. Enable junior analysts to answer framework questions independently. Scale engagements without scaling headcount.</p>
+    </div>
+    <div class="use-case">
+      <div class="uc-icon">🌱</div>
+      <h3>Carbon Market Players</h3>
+      <p>Verra VCS methodology guidance, ICVCM CCP screening, CORSIA eligibility, Article 6 compliance, and carbon credit due diligence.</p>
+    </div>
+    <div class="use-case">
+      <div class="uc-icon">🏢</div>
+      <h3>Corporate Sustainability Teams</h3>
+      <p>BRSR Core assurance prep, CSRD supply chain compliance, GHG Protocol Scope 3, SBTi target setting, and greenwashing risk assessment.</p>
+    </div>
+    <div class="use-case">
+      <div class="uc-icon">⚡</div>
+      <h3>Energy & Infrastructure</h3>
+      <p>IFC EHS guidelines, renewable energy regulatory screening, PPA analysis, ACI Airport Carbon Accreditation, and ESIA support.</p>
+    </div>
+    <div class="use-case">
+      <div class="uc-icon">🔬</div>
+      <h3>Manufacturers & Pharma</h3>
+      <p>REACH SVHC screening, PCF calculation, LCA methodology, EPD preparation, EPR obligations, and EcoVadis score improvement.</p>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section class="features">
+  <div style="max-width:1200px; margin:0 auto;">
+    <div class="section-label">Platform Features</div>
+    <h2 class="section-title">Built differently from the ground up</h2>
+    <p class="section-sub">GaiaLM is not a general AI with a sustainability prompt. It is a purpose-built intelligence system trained exclusively on primary source standards.</p>
+  </div>
+  <div class="features-grid" style="max-width:1200px; margin:0 auto;">
+    <div class="feature">
+      <div class="feature-icon">⚡</div>
+      <div>
+        <h3>Streaming responses</h3>
+        <p>See answers appear token by token — perceived response time under 2 seconds regardless of answer length.</p>
+      </div>
+    </div>
+    <div class="feature">
+      <div class="feature-icon">📎</div>
+      <div>
+        <h3>Document upload</h3>
+        <p>Upload any PDF — sustainability report, PDD, PPA, ESIA — and query it against the standards corpus.</p>
+      </div>
+    </div>
+    <div class="feature">
+      <div class="feature-icon">📄</div>
+      <div>
+        <h3>Citation-grade accuracy</h3>
+        <p>Every answer cites the exact standard, clause, and section. No fabricated references — ever.</p>
+      </div>
+    </div>
+    <div class="feature">
+      <div class="feature-icon">🎯</div>
+      <div>
+        <h3>Confidence scoring</h3>
+        <p>Every response includes a confidence score and gap notes — so you know exactly what to verify.</p>
+      </div>
+    </div>
+    <div class="feature">
+      <div class="feature-icon">🔐</div>
+      <div>
+        <h3>Module access control</h3>
+        <p>Assign specific modules to specific users. Clients only see what they need — nothing more.</p>
+      </div>
+    </div>
+    <div class="feature">
+      <div class="feature-icon">📊</div>
+      <div>
+        <h3>Analytics dashboard</h3>
+        <p>Track usage, query volume, module breakdown, and response times across your entire team.</p>
+      </div>
+    </div>
+    <div class="feature">
+      <div class="feature-icon">💾</div>
+      <div>
+        <h3>Conversation history</h3>
+        <p>Every session is saved and searchable. Reload any past conversation and continue where you left off.</p>
+      </div>
+    </div>
+    <div class="feature">
+      <div class="feature-icon">📤</div>
+      <div>
+        <h3>Export responses</h3>
+        <p>Download any GaiaLM answer as a formatted document. Copy directly to client deliverables.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA / ACCESS -->
+<section id="access" class="cta-section">
+  <div class="section-label">Get Started</div>
+  <h2 class="section-title">Ready to transform your sustainability practice?</h2>
+  <p class="section-sub">Join ESG professionals globally already using GaiaLM to answer in seconds what used to take days.</p>
+
+  <div class="cta-cards">
+    <!-- Request Access -->
+    <div class="cta-card">
+      <h3>🔑 Request Access</h3>
+      <p>Join the pilot programme. We'll be in touch within 24 hours to set up your account and recommended modules.</p>
+      <form class="access-form" id="accessForm" action="https://formspree.io/f/meedaaov" method="POST">
+        <input type="text" name="name" placeholder="Your name" required />
+        <input type="email" name="email" placeholder="Work email" required />
+        <input type="text" name="company" placeholder="Company / Organisation" />
+        <input type="text" name="use_case" placeholder="Primary use case (e.g. BRSR, Carbon, TCFD)" />
+        <button type="submit" class="btn btn-primary">Request Access →</button>
+      </form>
+      <div class="form-success" id="formSuccess">✅ Request received — we'll be in touch within 24 hours.</div>
+    </div>
+
+    <!-- Free Trial -->
+    <div class="cta-card">
+      <h3>🚀 Start Free Trial</h3>
+      <p>Sign up instantly and get full access to GaiaLM for 14 days. No credit card required. All modules included.</p>
+      <a href="https://app.gaialm.ai/sign-up" class="btn btn-primary" style="margin-bottom:16px; display:flex;">Start Free Trial →</a>
+      <p style="font-size:.78rem; color:var(--dim); margin-bottom:0;">Full platform access · All 7 live modules · No credit card</p>
+    </div>
+
+    <!-- Book Demo -->
+    <div class="cta-card">
+      <h3>📅 Book a Demo</h3>
+      <p>See GaiaLM live with your actual use case. We'll run your real questions through the platform and show you exactly what it can do for your team.</p>
+      <a href="https://calendly.com/chetan-kasim" target="_blank" class="btn btn-outline" style="display:flex; margin-bottom:16px;">Book 30-min Demo →</a>
+      <p style="font-size:.78rem; color:var(--dim); margin-bottom:0;">30 minutes · Live demo · Your questions · No obligation</p>
+    </div>
+  </div>
+</section>
+-->
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">
+    <div class="nav-logo-icon">🌿</div>
+    GaiaLM
+  </div>
+  <p>© 2026 GaiaLM. Sustainable Intelligence for All.</p>
+  <div class="footer-links">
+    <a href="mailto:hello@gaialm.ai">hello@gaialm.ai</a>
+  </div>
+</footer>
+
+<script>
+  // Form submission
+  const form = document.getElementById('accessForm')
+  const success = document.getElementById('formSuccess')
+
+  if (form) {
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault()
+      const data = new FormData(form)
+      try {
+        const res = await fetch(form.action, {
+          method: 'POST',
+          body: data,
+          headers: { 'Accept': 'application/json' }
+        })
+        if (res.ok) {
+          form.style.display = 'none'
+          success.style.display = 'block'
+        }
+      } catch (err) {
+        alert('Submission failed — please email hello@gaialm.ai directly.')
+      }
+    })
+  }
+
+  // Smooth scroll for nav links
+  document.querySelectorAll('a[href^="#"]').forEach(a => {
+    a.addEventListener('click', e => {
+      e.preventDefault()
+      const target = document.querySelector(a.getAttribute('href'))
+      if (target) target.scrollIntoView({ behavior: 'smooth' })
+    })
+  })
+</script>
+
+</body>
+</html>
