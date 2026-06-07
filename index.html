@@ -338,6 +338,80 @@
 
 
     /* ============================================
+       WAITLIST FORM
+       ============================================ */
+    .waitlist {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: var(--space-4);
+      margin-bottom: var(--space-10);
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      max-width: 440px;
+    }
+
+    .waitlist-title {
+      font-family: var(--font-display);
+      font-size: var(--text-lg);
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    .waitlist-form {
+      display: flex;
+      width: 100%;
+      gap: var(--space-2);
+    }
+
+    .waitlist-input {
+      flex: 1;
+      padding: var(--space-4) var(--space-5);
+      background: var(--surface-raised);
+      border: 1px solid var(--border-default);
+      border-radius: var(--radius-lg);
+      color: var(--text-primary);
+      font-family: var(--font-body);
+      font-size: var(--text-base);
+      outline: none;
+      transition: all var(--transition-base);
+    }
+
+    .waitlist-input::placeholder {
+      color: var(--text-tertiary);
+    }
+
+    .waitlist-input:focus {
+      border-color: var(--brand-primary);
+      box-shadow: 0 0 0 3px var(--brand-primary-muted);
+    }
+
+    .waitlist-btn {
+      padding: var(--space-4) var(--space-6);
+      white-space: nowrap;
+    }
+
+    .form-success {
+      padding: var(--space-4) var(--space-6);
+      border-radius: var(--radius-lg);
+      background: rgba(34, 197, 94, 0.12);
+      border: 1px solid rgba(34, 197, 94, 0.25);
+      color: var(--semantic-success);
+      font-size: var(--text-sm);
+      text-align: center;
+    }
+
+    @media (max-width: 480px) {
+      .waitlist-form {
+        flex-direction: column;
+      }
+      .waitlist-btn {
+        width: 100%;
+      }
+    }
+
+    /* ============================================
        SOURCE CHIPS / TAGS
        ============================================ */
     .tags {
@@ -415,7 +489,7 @@
     <div class="nav-logo-icon">🌿</div>
     GaiaLM
   </a>
-  <a href="mailto:hello@gaialm.ai" class="btn btn-primary">Get in Touch</a>
+  <a href="#waitlist" class="btn btn-primary">Join Waitlist</a>
 </nav>
 
 <!-- HERO -->
@@ -450,6 +524,15 @@
     </div>
   </div>
 
+  <div class="waitlist" id="waitlist">
+    <p class="waitlist-title">Be the first to know</p>
+    <form class="waitlist-form" id="waitlistForm">
+      <input type="email" name="email" class="waitlist-input" placeholder="Enter your email" required />
+      <button type="submit" class="btn btn-primary waitlist-btn">Join Waitlist</button>
+    </form>
+    <div class="form-success" id="formSuccess" style="display: none;">You're on the list! We'll notify you at launch.</div>
+  </div>
+
   <div class="tags">
     <span class="chip">ESG</span>
     <span class="chip">Carbon Markets</span>
@@ -467,6 +550,33 @@
   <a href="mailto:hello@gaialm.ai">hello@gaialm.ai</a>
 </footer>
 
+
+<script>
+  // Smooth scroll
+  document.querySelectorAll('a[href^="#"]').forEach(a => {
+    a.addEventListener('click', e => {
+      e.preventDefault();
+      const target = document.querySelector(a.getAttribute('href'));
+      if (target) target.scrollIntoView({ behavior: 'smooth' });
+    });
+  });
+
+  // Waitlist form
+  const form = document.getElementById('waitlistForm');
+  const success = document.getElementById('formSuccess');
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const email = form.email.value;
+
+    // TODO: Replace with your backend endpoint (Formspree, Google Sheets, etc.)
+    // For now, just show success
+    console.log('Waitlist signup:', email);
+
+    form.style.display = 'none';
+    success.style.display = 'block';
+  });
+</script>
 
 </body>
 </html>
