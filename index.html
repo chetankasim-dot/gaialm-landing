@@ -1132,8 +1132,8 @@
                       Script /exec URL from GOOGLE_SHEETS_SETUP.md to switch it on
    CALENDLY_URL is offered after a successful submit so warm leads can self-book.  */
 (function(){
-  const FORMSPREE_URL = "https://formspree.io/f/meedaaov";
-  const SHEETS_URL    = "";
+  const FORMSPREE_URL = "https://formspree.io/f/moeayybp";
+  const SHEETS_URL    = "https://script.google.com/macros/s/AKfycbxE6XqMWAEy4oSyHD6Dwxs4_90sF1FRplJ57NrrkCPdlMuHobnQr9vGBcV3pzEA8QTQDQ/exec";
   const CALENDLY_URL  = "https://calendly.com/chetan-kasim";
   const CONTACT_EMAIL = "hello@gaialm.ai";
 
@@ -1173,33 +1173,47 @@
       referrer: document.referrer || 'direct'
     };
 
-    // Apps Script has no CORS headers on its response, so this one is fire-and-forget.
-    if(SHEETS_URL){
-      fetch(SHEETS_URL, {
-        method:'POST', mode:'no-cors',
-        headers:{'Content-Type':'text/plain;charset=utf-8'},
+    async function toFormspree(){
+      const res = await fetch(FORMSPREE_URL, {
+        method:'POST',
+        headers:{'Content-Type':'application/json','Accept':'application/json'},
         body: JSON.stringify(payload)
-      }).catch(()=>{});
+      });
+      if(!res.ok) throw new Error('formspree ' + res.status);
+      return 'formspree';
     }
 
-    try {
-      if(!FORMSPREE_URL && !SHEETS_URL) throw new Error('no endpoint configured');
+    async function toSheet(){
+      // text/plain keeps this a "simple" request \u2014 Apps Script answers no
+      // OPTIONS preflight, but its echo response does send Access-Control-Allow-Origin,
+      // so the redirect is followed and the JSON result is readable.
+      const res = await fetch(SHEETS_URL, {
+        method:'POST',
+        headers:{'Content-Type':'text/plain;charset=utf-8'},
+        body: JSON.stringify(payload)
+      });
+      if(!res.ok) throw new Error('sheets ' + res.status);
+      const out = await res.json();
+      if(!out || out.success !== true) throw new Error('sheets rejected the row');
+      return 'sheets';
+    }
 
-      if(FORMSPREE_URL){
-        const res = await fetch(FORMSPREE_URL, {
-          method:'POST',
-          headers:{'Content-Type':'application/json','Accept':'application/json'},
-          body: JSON.stringify(payload)
-        });
-        if(!res.ok) throw new Error('formspree ' + res.status);
-      }
+    // Write to every configured sink; one survivor is enough to confirm to the visitor.
+    const sinks = [];
+    if(FORMSPREE_URL) sinks.push(toFormspree());
+    if(SHEETS_URL) sinks.push(toSheet());
 
+    const results = sinks.length ? await Promise.allSettled(sinks) : [];
+    results.forEach(r => { if(r.status === 'rejected') console.error('Lead sink failed:', r.reason); });
+    const captured = results.some(r => r.status === 'fulfilled');
+
+    if(captured){
       form.style.display = 'none';
       show('ok',
         'Thanks \u2014 you\u2019re on the list. We\u2019ll be in touch to schedule your walkthrough.<br>' +
         'Prefer to pick a slot now? <a href="' + CALENDLY_URL + '" target="_blank" rel="noopener">Book a 30-min demo \u2192</a>');
-    } catch(err){
-      console.error('Lead capture failed:', err);
+    } else {
+      if(!sinks.length) console.error('Lead capture: no endpoint configured');
       show('err',
         'Something went wrong on our side. Email us at ' +
         '<a href="mailto:' + CONTACT_EMAIL + '?subject=GaiaLM%20demo%20request">' + CONTACT_EMAIL + '</a> ' +

@@ -5,16 +5,18 @@ is a real form. Its config block sits in the `EMAIL CAPTURE` script near the end
 the file:
 
 ```javascript
-const FORMSPREE_URL = "https://formspree.io/f/meedaaov";  // active
-const SHEETS_URL    = "";                                 // paste /exec URL to enable
+const FORMSPREE_URL = "https://formspree.io/f/moeayybp";                          // active
+const SHEETS_URL    = "https://script.google.com/macros/s/AKfycbxE.../exec";      // active
 const CALENDLY_URL  = "https://calendly.com/chetan-kasim";
 ```
 
-Both sinks are independent — leave one blank and the other still works.
+Both sinks are live and independent: the page writes to both and shows the visitor
+success if **either** one accepts the row, so a Formspree quota overrun or an Apps
+Script outage doesn't lose the lead. Failures are logged to the browser console.
 
 | Sink | Cost | Good for | Notes |
 | --- | --- | --- | --- |
-| **Formspree** (active) | Free tier: 50 submissions/month | Instant email notification + dashboard, no setup | Already wired to form `meedaaov`. Paid plan needed past 50/month. |
+| **Formspree** (active) | Free tier: 50 submissions/month | Instant email notification + dashboard, no setup | Already wired to form `moeayybp`. Paid plan needed past 50/month. |
 | **Google Sheets** (Apps Script) | Free | A spreadsheet you can sort, filter and export | No notification unless you add one; setup below. |
 | **Formspree + Sheets** | Free | Notification *and* a durable list | Set both constants. |
 
@@ -24,11 +26,13 @@ Each submission sends `email`, `source`, `page` and `referrer`.
 
 ## Enabling the Google Sheet
 
-### Step 1 — Create the sheet
+The sheet in use is
+[GaiaLM Waitlist](https://docs.google.com/spreadsheets/d/1I57zjV1OpEGTBHMu-EoT5Z9m6SsOf1QosV_Mb2fK-vY/edit?gid=0#gid=0)
+(spreadsheet ID `1I57zjV1OpEGTBHMu-EoT5Z9m6SsOf1QosV_Mb2fK-vY`).
 
-1. Go to [sheets.google.com](https://sheets.google.com) and create a spreadsheet
-2. Name it **"GaiaLM Waitlist"**
-3. In Row 1 add these headers: `Timestamp`, `Email`, `Source`, `Page`, `Referrer`
+### Step 1 — Headers
+
+In Row 1 of that sheet, add: `Timestamp`, `Email`, `Source`, `Page`, `Referrer`
 
 ### Step 2 — Add the script
 
@@ -64,22 +68,26 @@ function doPost(e) {
 ### Step 4 — Wire it up
 
 Paste that URL into `SHEETS_URL` in [index.html](index.html) and redeploy the site.
+**Done — the current deployment is already wired in and verified.**
 
-The browser posts to Apps Script with `mode: 'no-cors'` (Apps Script sends no CORS
-headers on its response), so the page cannot see whether the row landed. Formspree
-is what decides the success/error message the visitor sees — if you run Sheets
-*only*, the form will always report success, so check the sheet after a test submit.
+The post uses `Content-Type: text/plain` on purpose: that keeps it a "simple" CORS
+request, because Apps Script answers no `OPTIONS` preflight. Its `/exec` URL 302s to
+a `script.googleusercontent.com` echo response, and *that* response does carry
+`Access-Control-Allow-Origin: *` — so the page can read the `{"success":true}` body
+and genuinely knows whether the row landed.
 
 ---
 
 ## Troubleshooting
 
-**Nothing arrives from Formspree** — confirm form `meedaaov` is still active in the
+**Nothing arrives from Formspree** — confirm form `moeayybp` is still active in the
 Formspree dashboard and that the monthly quota isn't used up. A failed POST shows the
 visitor a `hello@gaialm.ai` fallback and logs the status to the browser console.
 
 **Nothing arrives in the sheet**
 - Check **Extensions → Apps Script → Executions** for errors
 - "Who has access" must be **Anyone**
+- Redeploying Apps Script can mint a new `/exec` URL — if you used
+  **New deployment** rather than **Manage deployments → Edit**, update `SHEETS_URL`
 - After editing the script: **Deploy → Manage deployments → Edit → New version → Deploy**
   (the `/exec` URL stays the same)
